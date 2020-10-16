@@ -1,16 +1,18 @@
-let web3x = new Web3(web3.currentProvider);
 let defaultAddress = location.hash? location.hash.replace("#","") : '0x83dd89b40636f946a08975e97aa7a36d12dae551'
 const ETHERSCAN_API = 'GC2Q118AB2HIYZZFN25CQ956VEQUFVZIII'
 window.defaultAddress = defaultAddress
-web3x.eth.defaultAccount = web3x.eth.accounts[0];
+
 var ERC20Contract
 const ethEnabled = (cb) => {
   if (window.web3) {
     window.web3 = new Web3(window.web3.currentProvider);
     window.ethereum.enable();
-    web3.version.getNetwork((err, network)=>{
-      window.chainId = Number(network)
-      return cb(true)
+    web3.eth.net.getNetworkType((err, network)=>{
+      window.chainId = Number(network === "main" ? 1 : 4)
+      web3.eth.getAccounts().then((accounts)=>{
+        web3.eth.defaultAccount = accounts[0]
+        return cb(true)
+      })
     })    
   }
   return cb(false);
@@ -47,8 +49,25 @@ function handleFunctionButtonClick(e) {
     responseTarget.text(err ? err.message : out)
     // console.log(out, outputs)
   }
-  properties.push(cb)
-  contract[functionTarget].apply(contract[functionTarget], Array.prototype.slice.call(properties, 0))
+  // properties.push(cb)
+  let func = contract.methods[functionTarget].apply(contract.methods[functionTarget], Array.prototype.slice.call(properties, 0))
+  let functionType = funcs.filter(func=>{return func.name === functionTarget})[0].stateMutability
+  if (functionType === "view") {
+    func.call().then((results, err)=>{
+      return cb(err, results)
+    }).catch(err=>{
+      return cb(err, null)
+    })
+  } else {
+    func.send({from: web3.eth.defaultAccount}).then((results, err)=>{
+      return cb(err, results)
+    }).catch(err=>{
+      return cb(err, null)
+    })
+  }
+  // func.call().then((results, err)=>{
+  //   return cb(err, results)
+  // })
   // window.cb = (err, out)=>{console.log('out', out, err)}
   // console.log("properties", properties)
 
@@ -162,8 +181,8 @@ function handleWork() {
 window.handleWork = handleWork
 
 function loadContract(address, abi, cb){
-  ERC20Contract = web3x.eth.contract(abi);
-  var contract = ERC20Contract.at(address)
+  var contract = new web3.eth.Contract(abi, address);
+  // var contract = ERC20Contract.at(address)
   window.tokenAbi = abi
   window.contract = contract
   return cb()
