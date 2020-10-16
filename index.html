@@ -1,7 +1,7 @@
 <html lang="en">
 
 <head>
-  <title>ConfigurableERC20</title>
+  <title class="contractName">ConfigurableERC20</title>
   <script src="https://code.jquery.com/jquery-3.1.1.min.js"
     integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
   <!-- // <script src="https://s3.amazonaws.com/browser-solc.dappbench.com/browser-solc.js"></script> -->
@@ -32,7 +32,22 @@
 <body>
   
   <div class="container">
-    <h1>Configurable ERC20 Token</h1>
+    <div class="container">
+      <div class="row" style="margin-bottom: 10px">
+        <div class="col-6">
+          <h1 class="contractName">Configurable ERC20 Token</h1>
+        </div>
+        <div class="col-6" style="margin-top: 10px;">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" id="contract-address" placeholder="Contract Address" aria-label="Contract Address" aria-describedby="load-button">
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary" type="button" id="load-button">Load</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
        
     <div class="container">
       <div class="row rule" style="margin-bottom: 10px">            
@@ -272,7 +287,7 @@
       </div>
     </div> -->
 
-    <template id="cat-list-template">
+    <template id="function-list-template">
       {{#each functions}}
       <div class="container">
         <div class="row rule sub-rule detail" style="margin-bottom: 10px">            
@@ -315,117 +330,10 @@
     </template>
 
     <!-- <h2> Generated </h2> -->
-    <div id="cat-list"> </div>
+    <div id="function-list"> </div>
     <script>
-      $( document ).ready(function() {
-        let funcs = window.tokenAbi.filter(item=>{return item.type === "function"}).map(func=>{
-            func.formattedName = unCamelCase(func.name)
-            let width
-            switch(true) {
-              case func.formattedName.length <= 7 :
-                width = 1
-                break;
-              case func.formattedName.length > 7 && func.formattedName.length <= 13 :
-                width = 2
-                break;
-              default : 
-                width = 3
-                break;
-            }
-            func.formattedNameWidth = width
-            // console.log(func.formattedNameWidth, func.formattedName)
-            func.inputs = func.inputs.map(input=>{
-              input.width = Math.floor((12 - width) / func.inputs.length)
-              return input
-            })
-            return func
-        })
-        funcs = funcs.map(_function => {
-          
-            let functions = funcs.filter(f=>{return f.name === _function.name})
-             if (functions.length > 1) {
-                let filteredFunctionInputs = functions.map(f=>{ return JSON.stringify(f.inputs)})
-                let currentInputsString = JSON.stringify(_function.inputs)
-                let index = filteredFunctionInputs.indexOf(currentInputsString)
-                // console.log('internal loop inputs', currentInputsString, index)
-                // console.log('functions', filteredFunctionInputs)
-                _function.index = index
-            }
-          return _function
-        })
-        var template = document.getElementById('cat-list-template').innerHTML;
-        var renderCats = Handlebars.compile(template);
-        document.getElementById('cat-list').innerHTML = renderCats({
-          functions: funcs
-        });
-        window.funcs = funcs;
-
-        function handleFunctionButtonClick(e) {
-          let functionTarget = $($(e.target).parent().parent()[0]).attr('id')
-          let functionPropertyTargets = $($(e.target).parent()[0]).siblings().find("input")
-          let responseTarget = $($($(e.target).parents()[1]).siblings()[0]).find(".output")
-          let functionMap = propertyIdToFunctionMap(functionTarget)          
-          // console.log('function', functionMap.name)
-          let properties = []
-          functionPropertyTargets.each((index, target)=>{
-            let id = $(target).attr('id')
-            let propertyMap = propertyIdToFunctionMap(id, false)
-            propertyMap.value = $(target).val()
-            properties.push(propertyMap.value)            
-            // console.log("propertyTarget", id, $(target).val())
-          })
-          let cb = (err, out)=>{
-            switch(typeof out) {
-              case "boolean":
-              break;
-              case "object" :
-                out = out.toJSON();
-              break;
-            }
-            let outputs = funcs.filter(func=>{return func.name === functionMap.name})[functionMap.index].outputs
-            responseTarget.text(out)
-            console.log(out, outputs)
-          }
-          properties.push(cb)
-          contract[functionTarget].apply(contract[functionTarget], Array.prototype.slice.call(properties, 0))
-          // window.cb = (err, out)=>{console.log('out', out, err)}
-          // console.log("properties", properties)
-          
-        }
-        window.handleFunctionButtonClick = handleFunctionButtonClick
-
-        function propertyIdToFunctionMap(target, includeIndex = true) {
-            let _property = {}
-            target.split('-').forEach(prop=>{
-                props = prop.split('[')
-                includeIndex? _property.index = 0 : null
-                _property.name = props[0]
-                if (props.length > 1 && includeIndex) {
-                    _property.index = Number(props[1].replace(']',''))
-                    //console.log("ADD INDEX", Number(props[1].replace(']','')))
-                }
-            })
-            return _property
-        }
-        window.propertyIdToFunctionMap = propertyIdToFunctionMap
-        function createNamedProxy(func){
-            this[func].apply(this, Array.prototype.slice.call(arguments, 1));
-        } 
-        window.createNamedProxy = createNamedProxy
-
-        function autoExecViewFunctions() {
-          $(".fun-btn").each((index, element)=>{
-              let buttonElement = $(element)
-              let functionName = $(element).attr('id').replace('btn-','')
-              let isView = funcs.filter(func=>{return func.name === functionName})[0].stateMutability === "view"
-              if (isView) {
-                  handleFunctionButtonClick({target: $(buttonElement)})
-              }
-              // console.log(isView, functionName, buttonElement)
-          })
-        }
-        $("body").on("click", ".fun-btn", handleFunctionButtonClick)
-        autoExecViewFunctions()
+      $(document).ready(function () {
+        window.handleWork()
       })
     </script>
 
