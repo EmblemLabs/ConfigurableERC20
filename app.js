@@ -40,9 +40,13 @@ function handleFunctionButtonClick(e) {
       case "string":
         break;
       case "object":
-        if (out) {
+        if (out && !out.transactionHash) {
           out = out.toJSON();
-        }                  
+        } else if (out && out.transactionHash){
+          out = out.transactionHash
+        } else {
+          out = err || "Unknown Error"
+        }              
         break;
     }
     let outputs = funcs.filter(func => { return func.name === functionMap.name })[functionMap.index].outputs
