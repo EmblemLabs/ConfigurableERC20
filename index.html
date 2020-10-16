@@ -7,19 +7,40 @@
   <!-- // <script src="https://s3.amazonaws.com/browser-solc.dappbench.com/browser-solc.js"></script> -->
   <script id="testscript" type="module" src="./ERC20.js" type="text/javascript"></script>
   <script type="module" src="./dist/web3.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js" integrity="sha512-zT3zHcFYbQwjHdKjCu6OMmETx8fJA9S7E6W7kBeFxultf75OPTYUJigEKX58qgyQMi1m1EgenfjMXlRZG8BXaw==" crossorigin="anonymous"></script>
   <!-- <script type="module" src="./node_modules/web3-utils/dist/web3-utils.cjs.js"></script> -->
-
+  <script src="./utils.js"></script>
+  <script src="./helpers.js"></script>
 
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
     integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <style>
+      .rule {
+        height: 2px;
+        background-color: black;
+      }
+      .rule.sub-rule {
+        opacity: 0.2;
+      }
+      .rule.sub-rule.detail {
+        opacity: 0.05;
+      }
+    </style>
 
 </head>
 
 <body>
+  
   <div class="container">
     <h1>Configurable ERC20 Token</h1>
-    <h2>ERC20 Functions</h2>
-    <ul>
+       
+    <div class="container">
+      <div class="row rule" style="margin-bottom: 10px">            
+      </div>
+    </div>
+
+    <!-- <h2>ERC20 Functions</h2> -->
+    <!-- <ul>
       <li> transfer(address to, uint256 value) external returns (bool); </li>
       <li> approve(address spender, uint256 value) external returns (bool); </li>
       <li> transferFrom(address from, address to, uint256 value) external returns (bool); </li>
@@ -28,191 +49,372 @@
       <li> allowance(address owner, address spender) external view returns (uint256); </li>
       <li> event Transfer(address indexed from, address indexed to, uint256 value); </li>
       <li> event Approval(address indexed owner, address indexed spender, uint256 value); </li>
-    </ul>
+    </ul> -->
+            
+    <!-- <div class="container">
+      <div class="row rule sub-rule" style="margin-bottom: 10px">            
+      </div>
+    </div> -->
 
-    <div class="container">
+    <!-- <div class="container">
       <div class="row" style="margin-bottom: 10px">
-        <div class="col-12">
-          <h2>Get Balance</h2>
+        <div class="container">
+          <div class="row" style="margin-bottom: 10px">
+            <div class="col-12">
+              <h4>Get Balance</h4>
+            </div>
+          </div>
+        </div>
+
+        <div class="container">
+          <div class="row" style="margin-bottom: 10px">
+            <div class="col-2">
+              <button id="btnGetBalance" class="btn btn-outline-primary" type="button" onclick="getBalance()"> Get
+                Balance
+              </button>
+            </div>
+            <div class="col-7">
+              <input type="text" class="form-control" placeholder="Wallet Address" id="walletaddress"
+                aria-label="walletaddress" aria-describedby="walletaddress">
+            </div>
+            <div class="col-3">
+              <p id="walletaddressbalance"></p>
+            </div>
+          </div>
+        </div>
+                    
+        <div class="container">
+          <div class="row rule sub-rule detail" style="margin-bottom: 10px">            
+          </div>
+        </div>
+    
+        <div class="container">
+          <div class="row" style="margin-bottom: 10px">
+            <div class="col-12">
+              <h4>Transfer</h4>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="container">
+          <div class="row" style="margin-bottom: 10px">
+            <div class="col-2">
+              <button id="btnTransfer" class="btn btn-outline-primary" type="button" onclick="transfer()"> Transfer
+              </button>
+            </div>
+            <div class="col-3">
+              <input type="text" class="form-control" placeholder="Number Tokens" id="numbertokens"
+                aria-label="numbertokens" aria-describedby="numbertokens">
+            </div>
+            <div class="col-7">
+              <input type="text" class="form-control" placeholder="Wallet Address" id="receivingwalletaddress"
+                aria-label="receivingwalletaddress" aria-describedby="receivingwalletaddress">
+            </div>
+          </div>
+        </div>
+            
+        <div class="container">
+          <div class="row rule sub-rule detail" style="margin-bottom: 10px">            
+          </div>
+        </div>
+    
+        <div class="container">
+          <div class="row" style="margin-bottom: 10px">
+            <div class="col-12">
+              <h4>Transfer From</h4>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="container">
+          <div class="row" style="margin-bottom: 10px">
+            <div class="col-2">
+
+            </div>
+            <div class="col-3">
+              <input type="text" class="form-control" placeholder="Number Tokens" id="numbertokensFrom"
+                aria-label="numbertokensFrom" aria-describedby="numbertokensFrom">
+            </div>
+            <div class="col-7">
+              <input type="text" class="form-control" placeholder="From Wallet Address" id="sendingwalletaddressFrom"
+                aria-label="sendingwalletaddressFrom" aria-describedby="sendingwalletaddressFrom">
+            </div>
+          </div>
+        </div>
+            
+        <div class="container">
+          <div class="row" style="margin-bottom: 10px">
+            <div class="col-2">
+              <button id="btnTransferFrom" class="btn btn-outline-primary" type="button" onclick="transferFrom()">
+                Transfer
+                From </button>
+            </div>
+            <div class="col-3">
+            </div>
+            <div class="col-7">
+              <input type="text" class="form-control" placeholder="To Wallet Address" id="receivingwalletaddressFrom"
+                aria-label="receivingwalletaddressFrom" aria-describedby="receivingwalletaddressFrom">
+            </div>
+          </div>
+        </div>
+            
+        <div class="container">
+          <div class="row rule sub-rule detail" style="margin-bottom: 10px">            
+          </div>
+        </div>
+    
+        <div class="container">
+          <div class="row" style="margin-bottom: 10px">
+            <div class="col-12">
+              <h4>Approve</h4>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="container">
+          <div class="row" style="margin-bottom: 10px">
+            <div class="col-2">
+              <button id="btnApprove" class="btn btn-outline-primary" type="button" onclick="approve()"> Approve
+              </button>
+            </div>
+            <div class="col-3">
+              <input type="text" class="form-control" placeholder="Number Tokens" id="numbertokensApprove"
+                aria-label="numbertokensApprove" aria-describedby="numbertokensApprove">
+            </div>
+            <div class="col-7">
+              <input type="text" class="form-control" placeholder="Spending Wallet Address" id="spendingwalletaddress"
+                aria-label="spendingwalletaddress" aria-describedby="spendingwalletaddress">
+            </div>
+          </div>
+        </div>
+            
+        <div class="container">
+          <div class="row rule sub-rule detail" style="margin-bottom: 10px">            
+          </div>
+        </div>
+    
+        <div class="container">
+          <div class="row" style="margin-bottom: 10px">
+            <div class="col-12">
+              <h4>Allowance</h4>
+            </div>
+          </div>
+        </div>
+
+        <div class="container">
+          <div class="row" style="margin-bottom: 10px">
+            <div class="col-2">
+
+            </div>
+            <div class="col-7">
+              <input type="text" class="form-control" placeholder="Owner Wallet Address"
+                id="ownerwalletaddressAllowance" aria-label="ownerwalletaddressAllowance"
+                aria-describedby="ownerwalletaddressAllowance">
+            </div>
+          </div>
+          <div class="col-3">
+
+          </div>
+
+        </div>
+
+        <div class="container">
+          <div class="row" style="margin-bottom: 10px">
+            <div class="col-2">
+              <button id="btnAllowance" class="btn btn-outline-primary" type="button" onclick="allowance()"> Get
+                Allowance
+              </button>
+            </div>
+
+            <div class="col-7">
+              <input type="text" class="form-control" placeholder="Spend Wallet Address"
+                id="spendingwalletaddressAllowance" aria-label="spendingwalletaddressAllowance"
+                aria-describedby="spendingwalletaddressAllowance">
+            </div>
+          </div>
+          <div class="col-3">
+            <p id="allowance"></p>
+          </div>
+        </div>
+                    
+        <div class="container">
+          <div class="row rule sub-rule detail" style="margin-bottom: 10px">            
+          </div>
+        </div>
+    
+        <div class="container">
+          <div class="row" style="margin-bottom: 10px">
+            <div class="col-12">
+              <h4>Total Supply</h4>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="container">
+          <div class="row" style="margin-bottom: 10px">
+            <div class="col-2">
+              <button id="btnGetTotalSupply" class="btn btn-outline-primary" type="button" onclick="getTotalSupply()">
+                Get
+                Total Supply </button>
+            </div>
+            <div class="col-7">
+              <p id="totalsupply"></p>
+            </div>
+            <div class="col-3">
+
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
-    <div class="container">
-      <div class="row" style="margin-bottom: 10px">
-        <div class="col-2">
-          <button id="btnGetBalance" class="btn btn-outline-primary" type="button" onclick="getBalance()"> Get Balance
-          </button>
-        </div>
-        <div class="col-7">
-          <input type="text" class="form-control" placeholder="Wallet Address" id="walletaddress"
-            aria-label="walletaddress" aria-describedby="walletaddress">
-        </div>
-        <div class="col-3">
-          <p id="walletaddressbalance"></p>
+    <template id="cat-list-template">
+      {{#each functions}}
+      <div class="container">
+        <div class="row rule sub-rule detail" style="margin-bottom: 10px">            
         </div>
       </div>
-    </div>
-
-    <div class="container">
-      <div class="row" style="margin-bottom: 10px">
-        <div class="col-12">
-          <h2>Transfer</h2>
+  
+      <div class="container">
+        <div class="row" style="margin-bottom: 10px">
+          <div class="col-12">
+            <h4>{{capitalizeAll formattedName}} {{index}}</h4>
+          </div>
         </div>
       </div>
-    </div>
 
 
-    <div class="container">
-      <div class="row" style="margin-bottom: 10px">
-        <div class="col-2">
-          <button id="btnTransfer" class="btn btn-outline-primary" type="button" onclick="transfer()"> Transfer
-          </button>
+      <div class="container">
+        <div class="row" style="margin-bottom: 10px" id="{{name}}{{#if index includeZero=true}}[{{index}}]{{/if}}">
+          <div class="col-{{formattedNameWidth}}">
+          <button id="btn{{name}}" class="btn btn-outline-primary fun-btn" type="button">
+              {{capitalizeAll formattedName}}</button>
+          </div>
+          {{#if this.inputs}}
+            {{#each this.inputs}}
+              <div class="col-{{width}}">
+                <input type="text" class="form-control" placeholder="{{name}} ({{type}})" id="{{../name}}{{#if ../index includeZero=true}}[{{../index}}]{{/if}}-{{name}}"
+                  aria-label="{{../name}}_{{name}}" >
+              </div>
+            {{/each}}
+          {{else}}
+            <div class="col-{{minus 12 formattedNameWidth}}"></div>
+          {{/if}}
         </div>
-        <div class="col-3">
-          <input type="text" class="form-control" placeholder="Number Tokens" id="numbertokens"
-            aria-label="numbertokens" aria-describedby="numbertokens">
-        </div>
-        <div class="col-7">
-          <input type="text" class="form-control" placeholder="Wallet Address" id="receivingwalletaddress"
-            aria-label="receivingwalletaddress" aria-describedby="receivingwalletaddress">
-        </div>
-      </div>
-    </div>
-
-    <div class="container">
-      <div class="row" style="margin-bottom: 10px">
-        <div class="col-12">
-          <h2>Transfer From</h2>
-        </div>
-      </div>
-    </div>
-
-
-    <div class="container">
-      <div class="row" style="margin-bottom: 10px">
-        <div class="col-2">
-
-        </div>
-        <div class="col-3">
-          <input type="text" class="form-control" placeholder="Number Tokens" id="numbertokensFrom"
-            aria-label="numbertokensFrom" aria-describedby="numbertokensFrom">
-        </div>
-        <div class="col-7">
-          <input type="text" class="form-control" placeholder="From Wallet Address" id="sendingwalletaddressFrom"
-            aria-label="sendingwalletaddressFrom" aria-describedby="sendingwalletaddressFrom">
+        <div class="row" style="margin-bottom: 10px" id="{{name}}{{#if index includeZero=true}}[{{index}}]{{/if}}">
+          <div class="col-12 output">
+            
+          </div>
         </div>
       </div>
-    </div>
+      {{/each}}
+    </template>
 
-    <div class="container">
-      <div class="row" style="margin-bottom: 10px">
-        <div class="col-2">
-          <button id="btnTransferFrom" class="btn btn-outline-primary" type="button" onclick="transferFrom()"> Transfer
-            From </button>
-        </div>
-        <div class="col-3">
-        </div>
-        <div class="col-7">
-          <input type="text" class="form-control" placeholder="To Wallet Address" id="receivingwalletaddressFrom"
-            aria-label="receivingwalletaddressFrom" aria-describedby="receivingwalletaddressFrom">
-        </div>
-      </div>
-    </div>
+    <h2> Generated </h2>
+    <div id="cat-list"> </div>
+    <script>
+      $( document ).ready(function() {
+        let funcs = window.tokenAbi.filter(item=>{return item.type === "function"}).map(func=>{
+            func.formattedName = unCamelCase(func.name)
+            let width
+            switch(true) {
+              case func.formattedName.length <= 7 :
+                width = 1
+                break;
+              case func.formattedName.length > 7 && func.formattedName.length <= 13 :
+                width = 2
+                break;
+              default : 
+                width = 3
+                break;
+            }
+            func.formattedNameWidth = width
+            // console.log(func.formattedNameWidth, func.formattedName)
+            func.inputs = func.inputs.map(input=>{
+              input.width = Math.floor((12 - width) / func.inputs.length)
+              return input
+            })
+            return func
+        })
+        funcs = funcs.map(_function => {
+          
+            let functions = funcs.filter(f=>{return f.name === _function.name})
+             if (functions.length > 1) {
+                let filteredFunctionInputs = functions.map(f=>{ return JSON.stringify(f.inputs)})
+                let currentInputsString = JSON.stringify(_function.inputs)
+                let index = filteredFunctionInputs.indexOf(currentInputsString)
+                // console.log('internal loop inputs', currentInputsString, index)
+                // console.log('functions', filteredFunctionInputs)
+                _function.index = index
+            }
+          return _function
+        })
+        var template = document.getElementById('cat-list-template').innerHTML;
+        var renderCats = Handlebars.compile(template);
+        document.getElementById('cat-list').innerHTML = renderCats({
+          functions: funcs
+        });
+        window.funcs = funcs;
 
-    <div class="container">
-      <div class="row" style="margin-bottom: 10px">
-        <div class="col-12">
-          <h2>Approve</h2>
-        </div>
-      </div>
-    </div>
+        function handleFunctionButtonClick(e) {
+          let functionTarget = $($(e.target).parent().parent()[0]).attr('id')
+          let functionPropertyTargets = $($(e.target).parent()[0]).siblings().find("input")
+          let responseTarget = $($($(e.target).parents()[1]).siblings()[0]).find(".output")
+          let functionMap = propertyIdToFunctionMap(functionTarget)          
+          // console.log('function', functionMap.name)
+          let properties = []
+          functionPropertyTargets.each((index, target)=>{
+            let id = $(target).attr('id')
+            let propertyMap = propertyIdToFunctionMap(id, false)
+            propertyMap.value = $(target).val()
+            properties.push(propertyMap)            
+            // console.log("propertyTarget", id, $(target).val())
+          })
+          let cb = (err, out)=>{
+            switch(typeof out) {
+              case "boolean":
+              break;
+              case "object" :
+                out = out.toJSON();
+              break;
+            }
+            let outputs = funcs.filter(func=>{return func.name === functionMap.name})[functionMap.index].outputs
+            responseTarget.text(out)
+            console.log(out, outputs)
+          }
+          properties.push(cb)
+          contract[functionTarget].apply(contract[functionTarget], Array.prototype.slice.call(properties, 0))
+          // window.cb = (err, out)=>{console.log('out', out, err)}
+          // console.log("properties", properties)
+          
+        }
+        window.handleFunctionButtonClick = handleFunctionButtonClick
 
-
-    <div class="container">
-      <div class="row" style="margin-bottom: 10px">
-        <div class="col-2">
-          <button id="btnApprove" class="btn btn-outline-primary" type="button" onclick="approve()"> Approve </button>
-        </div>
-        <div class="col-3">
-          <input type="text" class="form-control" placeholder="Number Tokens" id="numbertokensApprove"
-            aria-label="numbertokensApprove" aria-describedby="numbertokensApprove">
-        </div>
-        <div class="col-7">
-          <input type="text" class="form-control" placeholder="Spending Wallet Address" id="spendingwalletaddress"
-            aria-label="spendingwalletaddress" aria-describedby="spendingwalletaddress">
-        </div>
-      </div>
-    </div>
-
-    <div class="container">
-      <div class="row" style="margin-bottom: 10px">
-        <div class="col-12">
-          <h2>Allowance</h2>
-        </div>
-      </div>
-    </div>
-
-    <div class="container">
-      <div class="row" style="margin-bottom: 10px">
-        <div class="col-2">
-
-        </div>
-        <div class="col-7">
-          <input type="text" class="form-control" placeholder="Owner Wallet Address" id="ownerwalletaddressAllowance"
-            aria-label="ownerwalletaddressAllowance" aria-describedby="ownerwalletaddressAllowance">
-        </div>
-      </div>
-      <div class="col-3">
-
-      </div>
-
-    </div>
-
-    <div class="container">
-      <div class="row" style="margin-bottom: 10px">
-        <div class="col-2">
-          <button id="btnAllowance" class="btn btn-outline-primary" type="button" onclick="allowance()"> Get Allowance
-          </button>
-        </div>
-
-        <div class="col-7">
-          <input type="text" class="form-control" placeholder="Spend Wallet Address" id="spendingwalletaddressAllowance"
-            aria-label="spendingwalletaddressAllowance" aria-describedby="spendingwalletaddressAllowance">
-        </div>
-      </div>
-      <div class="col-3">
-        <p id="allowance"></p>
-      </div>
-    </div>
-
-
-
-    <div class="container">
-      <div class="row" style="margin-bottom: 10px">
-        <div class="col-12">
-          <h2>Total Supply</h2>
-        </div>
-      </div>
-    </div>
-
-
-    <div class="container">
-      <div class="row" style="margin-bottom: 10px">
-        <div class="col-2">
-          <button id="btnGetTotalSupply" class="btn btn-outline-primary" type="button" onclick="getTotalSupply()"> Get
-            Total Supply </button>
-        </div>
-        <div class="col-7">
-          <p id="totalsupply"></p>
-        </div>
-        <div class="col-3">
-
-        </div>
-      </div>
-    </div>
-
-
+        function propertyIdToFunctionMap(target, includeIndex = true) {
+            let _property = {}
+            target.split('-').forEach(prop=>{
+                props = prop.split('[')
+                includeIndex? _property.index = 0 : null
+                _property.name = props[0]
+                if (props.length > 1 && includeIndex) {
+                    _property.index = Number(props[1].replace(']',''))
+                    //console.log("ADD INDEX", Number(props[1].replace(']','')))
+                }
+            })
+            return _property
+        }
+        window.propertyIdToFunctionMap = propertyIdToFunctionMap
+        function createNamedProxy(func){
+            this[func].apply(this, Array.prototype.slice.call(arguments, 1));
+        } 
+        window.createNamedProxy = createNamedProxy
+        $("body").on("click", ".fun-btn", handleFunctionButtonClick)
+      })
+    </script>
 
   </div>
 
