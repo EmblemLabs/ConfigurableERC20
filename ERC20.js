@@ -155,13 +155,6 @@ function handleWork() {
 }
 window.handleWork = handleWork
 
-// getLocalAbi('./abi/configurableerc20.json', contractAbi=>{
-//   loadContract(defaultAddress, contractAbi, ()=>{
-//     console.log("Contract Loaded")
-//   })
-// })
-
-
 function loadContract(address, abi, cb){
   ERC20Contract = web3x.eth.contract(abi);
   var contract = ERC20Contract.at(address)
