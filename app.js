@@ -89,9 +89,10 @@ function assignEvents(cb){
   $("body").on("click", ".fun-btn", handleFunctionButtonClick)
   $("body").on("click", "#load-button", changeContractContext)
   $("#contract-address").val(defaultAddress)
-  $("#abiTextArea").val(JSON.stringify(tokenAbi))
-  $("#codeArea").html(contractDetails.SourceCode)
-  $(".contractName").text(contractDetails.ContractName)
+  
+  window.tokenAbi ? $("#abiTextArea").val(JSON.stringify(tokenAbi)) : null
+  window.contractDetails ? $("#codeArea").html(contractDetails.SourceCode) : null
+  window.contractDetails ? $(".contractName").text(contractDetails.ContractName) : null
   return cb()
 }
 window.assignEvents = assignEvents
@@ -176,24 +177,33 @@ function changeContractContext() {
   $.getJSON('https://api'+prefix+'.etherscan.io/api?module=contract&action=getsourcecode&address='+ address + '&apikey='+ETHERSCAN_API, function (data) {
       var contractABI = "";
       if (data.status === "1") {
-        contractABI = JSON.parse(data.result[0].ABI)
-        window.contractDetails = data.result[0]
-        if (contractABI != ''){
-          loadContract(address, contractABI, ()=>{
-            console.log("Re Initiating")
-            assignEvents(()=>{
-              handleWork()
-            })                      
-          })
+        contractABI = data.result[0].ABI
+        if ( contractABI === 'Contract source code not verified') {
+          return handleError(contractABI)
         } else {
-            console.log("Error" );
-        }
+          contractABI = JSON.parse(contractABI)
+          window.contractDetails = data.result[0]
+          if (contractABI != ''){
+            loadContract(address, contractABI, ()=>{
+              console.log("Re Initiating")
+              assignEvents(()=>{
+                handleWork()
+              })                      
+            })
+          } else {
+              return handleError(data)
+          }
+        }        
       } else {
-        $("#function-list").text(data.result ? data.result : "Unknown error")
-        clearTimeout(window.workTimeout)
-        assignEvents(()=>{})
+        return handleError("Unknown error")
       }                  
   })
+  function handleError(data) {
+    $("#read-function-list").text(data ? data : "Unknown error")
+    $("#write-function-list").text(data ? data : "Unknown error")
+    clearTimeout(window.workTimeout)
+    assignEvents(()=>{})
+  }
 }
 window.changeContractContext = changeContractContext
 
