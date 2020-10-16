@@ -291,7 +291,7 @@
       <div class="container">
         <div class="row" style="margin-bottom: 10px" id="{{name}}{{#if index includeZero=true}}[{{index}}]{{/if}}">
           <div class="col-{{formattedNameWidth}}">
-          <button id="btn{{name}}" class="btn btn-outline-primary fun-btn" type="button">
+          <button id="btn-{{name}}" class="btn btn-outline-primary fun-btn" type="button">
               {{capitalizeAll formattedName}}</button>
           </div>
           {{#if this.inputs}}
@@ -371,7 +371,7 @@
             let id = $(target).attr('id')
             let propertyMap = propertyIdToFunctionMap(id, false)
             propertyMap.value = $(target).val()
-            properties.push(propertyMap)            
+            properties.push(propertyMap.value)            
             // console.log("propertyTarget", id, $(target).val())
           })
           let cb = (err, out)=>{
@@ -412,7 +412,20 @@
             this[func].apply(this, Array.prototype.slice.call(arguments, 1));
         } 
         window.createNamedProxy = createNamedProxy
+
+        function autoExecViewFunctions() {
+          $(".fun-btn").each((index, element)=>{
+              let buttonElement = $(element)
+              let functionName = $(element).attr('id').replace('btn-','')
+              let isView = funcs.filter(func=>{return func.name === functionName})[0].stateMutability === "view"
+              if (isView) {
+                  handleFunctionButtonClick({target: $(buttonElement)})
+              }
+              // console.log(isView, functionName, buttonElement)
+          })
+        }
         $("body").on("click", ".fun-btn", handleFunctionButtonClick)
+        autoExecViewFunctions()
       })
     </script>
 
