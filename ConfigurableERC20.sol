@@ -18,7 +18,10 @@
   --- > Emblem Vault (https://emblem.finance)
   
  Documentation:
-  --- > Github (https://gist.github.com/genecyber/d4b5072950ae6964c88dfe7d588c2e82)
+  --- > Github (https://github.com/EmblemLabs/ConfigurableERC20)
+  
+ UI:
+  --- > (https://emblemlabs.github.io/ConfigurableERC20/)
 */
 
 //  SPDX-License-Identifier: MIT
