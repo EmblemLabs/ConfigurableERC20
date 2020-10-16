@@ -45,9 +45,6 @@ function handleFunctionButtonClick(e) {
     }
     let outputs = funcs.filter(func => { return func.name === functionMap.name })[functionMap.index].outputs
     responseTarget.text(err ? err.message : out)
-    if (functionMap.name === "name") {
-      $(".contractName").text(out)
-    }
     // console.log(out, outputs)
   }
   properties.push(cb)
@@ -92,6 +89,9 @@ function assignEvents(cb){
   $("body").on("click", ".fun-btn", handleFunctionButtonClick)
   $("body").on("click", "#load-button", changeContractContext)
   $("#contract-address").val(defaultAddress)
+  $("#abiTextArea").val(JSON.stringify(tokenAbi))
+  $("#codeArea").html(contractDetails.SourceCode)
+  $(".contractName").text(contractDetails.ContractName)
   return cb()
 }
 window.assignEvents = assignEvents
@@ -139,10 +139,15 @@ function handleWork() {
     }
     return _function
   })
+  let readFuncs = funcs.filter(func=>{ return func.stateMutability === "view"})
+  let writeFuncs = funcs.filter(func=>{ return func.stateMutability !== "view"})
   var template = document.getElementById('function-list-template').innerHTML;
-  var renderCats = Handlebars.compile(template);
-  document.getElementById('function-list').innerHTML = renderCats({
-    functions: funcs
+  var renderFunctions = Handlebars.compile(template);
+  document.getElementById('read-function-list').innerHTML = renderFunctions({
+    functions: readFuncs
+  });
+  document.getElementById('write-function-list').innerHTML = renderFunctions({
+    functions: writeFuncs
   });
   window.funcs = funcs;
   setTimeout(()=>{
@@ -168,16 +173,17 @@ function changeContractContext() {
   defaultAddress = address
   window.defaultAddress = defaultAddress
   let prefix = chainId === 1 ? '' : '-rinkeby'
-  $.getJSON('https://api'+prefix+'.etherscan.io/api?module=contract&action=getabi&address='+ address + '&apikey='+ETHERSCAN_API, function (data) {
+  $.getJSON('https://api'+prefix+'.etherscan.io/api?module=contract&action=getsourcecode&address='+ address + '&apikey='+ETHERSCAN_API, function (data) {
       var contractABI = "";
       if (data.status === "1") {
-        contractABI = JSON.parse(data.result);
+        contractABI = JSON.parse(data.result[0].ABI)
+        window.contractDetails = data.result[0]
         if (contractABI != ''){
           loadContract(address, contractABI, ()=>{
             console.log("Re Initiating")
             assignEvents(()=>{
               handleWork()
-            })            
+            })                      
           })
         } else {
             console.log("Error" );
@@ -186,14 +192,20 @@ function changeContractContext() {
         $("#function-list").text(data.result ? data.result : "Unknown error")
         clearTimeout(window.workTimeout)
         assignEvents(()=>{})
-      }
-                  
-  });
+      }                  
+  })
 }
 window.changeContractContext = changeContractContext
 
-window.loadContract = loadContract
+function downloadSourceCode(address, cb) {
+  let prefix = chainId === 1 ? '' : '-rinkeby'
+  $.getJSON('https://api'+prefix+'.etherscan.io/api?module=contract&action=getsourcecode&address='+ address + '&apikey='+ETHERSCAN_API, function (data) {
+    return cb(data)
+  })
+}
+window.downloadSourceCode = downloadSourceCode
 
+window.loadContract = loadContract
 
 async function getLocalAbi(location, cb) {
   let abi = await $.get(location)
