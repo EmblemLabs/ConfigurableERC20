@@ -67,7 +67,7 @@ function handleFunctionButtonClick(e) {
     func.call().then((results, err)=>{
       if (isAddress) {
         let old = results
-        results = function(){ return "<a href='https://emblemlabs.github.io/ConfigurableERC20/#"+old+"'>"+old+"</a>"}
+        results = function(){ return "<a target='_blank' href='https://emblemlabs.github.io/ConfigurableERC20/#"+old+"'>"+old+"</a>"}
       }
       return cb(err, results)
     }).catch(err=>{
