@@ -52,6 +52,9 @@ function handleFunctionButtonClick(e) {
           out = err || "Unknown Error"
         }              
         break;
+      case "function":
+        out = out()
+        break;
     }
     let outputs = funcs.filter(func => { return func.name === functionMap.name })[functionMap.index].outputs
     responseTarget.text(err ? err.message : out)
@@ -60,8 +63,12 @@ function handleFunctionButtonClick(e) {
   // properties.push(cb)
   let func = contract.methods[functionTarget].apply(contract.methods[functionTarget], Array.prototype.slice.call(properties, 0))
   let functionType = funcs.filter(func=>{return func.name === functionTarget})[0].stateMutability
+  let isAddress = funcs.filter(func=>{return func.name === functionTarget})[0].outputs[0].type == 'address'
   if (functionType === "view") {
     func.call().then((results, err)=>{
+      if (isAddress) {
+        results = function(){ return "<a href=''>"+results+"</a>"}
+      }
       return cb(err, results)
     }).catch(err=>{
       return cb(err, null)
