@@ -116,6 +116,21 @@ function assignEvents(cb){
   window.tokenAbi ? $("#abiTextArea").val(JSON.stringify(tokenAbi)) : null
   window.contractDetails ? $("#codeArea").html(contractDetails.SourceCode) : null
   window.contractDetails ? $(".contractName").text(contractDetails.ContractName) : null
+  $("body").on('change','#abiTextArea', (e)=>{
+    let abi = JSON.parse($(e.currentTarget).val())
+    let retVal = {SourceCode: '', ABI: JSON.stringify(abi), ContractName: 'Custom Load'}
+    let address = $("#contract-address").val()
+    console.log(retVal)
+    window.contractDetails = retVal
+    if (abi != ''){
+        loadContract(address, abi, ()=>{
+            console.log("Re Initiating")
+            assignEvents(()=>{
+                handleWork()
+            })                      
+        })
+    }    
+  })
   return cb()
 }
 window.assignEvents = assignEvents
