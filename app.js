@@ -115,7 +115,7 @@ function assignEvents(cb){
   $("body").off("click");
   $("body").on("click", ".fun-btn", handleFunctionButtonClick)
   $("body").on("click", "#load-button", changeContractContext)
-  $("#contract-address").val(defaultAddress)
+  $("#contract-address").val(splitAddresses.length > 1? splitAddresses[0]:defaultAddress)
   
   window.tokenAbi ? $("#abiTextArea").val(JSON.stringify(tokenAbi)) : null
   window.contractDetails ? $("#codeArea").html(contractDetails.SourceCode) : null
