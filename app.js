@@ -226,7 +226,7 @@ function changeContractContext() {
           contractABI = JSON.parse(contractABI)
           window.contractDetails = data.result[0]
           if (contractABI != ''){
-            loadContract(address, contractABI, ()=>{
+            loadContract(splitAddresses.length > 1? splitAddresses[0]: address, contractABI, ()=>{
               console.log("Re Initiating")
               assignEvents(()=>{
                 handleWork()
