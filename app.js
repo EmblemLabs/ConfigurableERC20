@@ -263,6 +263,21 @@ async function getLocalAbi(location, cb) {
 $("#contract-address").val(defaultAddress)
 ethEnabled((enabled)=>{
   if (enabled) {
-    changeContractContext()
+    let splitAddresses = defaultAddress.split(';')
+    if (splitAddresses.length > 1) {
+        console.log("SPlit")
+        defaultAddress = splitAddresses[0]
+        let prefix = chainId === 1 ? '' : '-rinkeby'
+        $.getJSON('https://api'+prefix+'.etherscan.io/api?module=contract&action=getsourcecode&address='+ splitAddresses + '&apikey='+ETHERSCAN_API, function (data) {
+            if (data.status === "1") {
+                console.log(data.result[0].ABI)
+                let json = data.result[0].ABI
+                $("#abiTextArea").val(JSON.stringify(json))
+                $("#abiTextArea").trigger("change")
+            }
+        })
+    } else {
+      changeContractContext()
+    }    
   }
 })
