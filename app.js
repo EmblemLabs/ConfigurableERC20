@@ -268,10 +268,11 @@ ethEnabled((enabled)=>{
         console.log("SPlit")
         defaultAddress = splitAddresses[0]
         let prefix = chainId === 1 ? '' : '-rinkeby'
-        $.getJSON('https://api'+prefix+'.etherscan.io/api?module=contract&action=getsourcecode&address='+ splitAddresses + '&apikey='+ETHERSCAN_API, function (data) {
+        $.getJSON('https://api'+prefix+'.etherscan.io/api?module=contract&action=getsourcecode&address='+ splitAddresses[1] + '&apikey='+ETHERSCAN_API, function (data) {
             if (data.status === "1") {
                 console.log(data.result[0].ABI)
                 let json = data.result[0].ABI
+                $("#abiTextArea").val(json)
                 $("#abiTextArea").val(JSON.stringify(json))
                 $("#abiTextArea").trigger("change")
             }
