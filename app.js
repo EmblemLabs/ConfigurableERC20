@@ -212,7 +212,7 @@ function loadContract(address, abi, cb){
 }
 
 function changeContractContext() {
-  let address = splitAddresses.length > 1? splitAddresses[0] : $("#contract-address").val()
+  let address = splitAddresses.length > 1? splitAddresses[1] : $("#contract-address").val()
   defaultAddress = address
   window.defaultAddress = defaultAddress
   let prefix = chainId === 1 ? '' : '-rinkeby'
