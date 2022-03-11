@@ -67,7 +67,8 @@ function handleFunctionButtonClick(e) {
   if (functionType === "view") {
     func.call().then((results, err)=>{
       if (isAddress) {
-        results = function(){ return "<a href=''>"+results+"</a>"}
+        let old = results
+        results = function(){ return "<a href=''>"+old+"</a>"}
       }
       return cb(err, results)
     }).catch(err=>{
