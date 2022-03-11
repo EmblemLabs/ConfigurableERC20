@@ -1,4 +1,8 @@
 let defaultAddress = location.hash? location.hash.replace("#","") : '0x83dd89b40636f946a08975e97aa7a36d12dae551'
+let splitAddresses = defaultAddress.split(';')
+if (splitAddresses.length > 1) {
+  defaultAddress = splitAddresses[0]
+}
 const ETHERSCAN_API = 'GC2Q118AB2HIYZZFN25CQ956VEQUFVZIII'
 window.defaultAddress = defaultAddress
 
@@ -208,7 +212,7 @@ function loadContract(address, abi, cb){
 }
 
 function changeContractContext() {
-  let address = $("#contract-address").val()
+  let address = splitAddresses.length > 1? splitAddresses[0] : $("#contract-address").val()
   defaultAddress = address
   window.defaultAddress = defaultAddress
   let prefix = chainId === 1 ? '' : '-rinkeby'
@@ -263,22 +267,22 @@ async function getLocalAbi(location, cb) {
 $("#contract-address").val(defaultAddress)
 ethEnabled((enabled)=>{
   if (enabled) {
-    let splitAddresses = defaultAddress.split(';')
-    if (splitAddresses.length > 1) {
-        console.log("SPlit")
-        defaultAddress = splitAddresses[0]
-        let prefix = chainId === 1 ? '' : '-rinkeby'
-        $.getJSON('https://api'+prefix+'.etherscan.io/api?module=contract&action=getsourcecode&address='+ splitAddresses[1] + '&apikey='+ETHERSCAN_API, function (data) {
-            if (data.status === "1") {
-                console.log(data.result[0].ABI)
-                let json = data.result[0].ABI
-                $("#abiTextArea").val(json)
-                $("#abiTextArea").val(JSON.stringify(json))
-                $("#abiTextArea").trigger("change")
-            }
-        })
-    } else {
+//     let splitAddresses = defaultAddress.split(';')
+//     if (splitAddresses.length > 1) {
+//         console.log("SPlit")
+//         defaultAddress = splitAddresses[0]
+//         let prefix = chainId === 1 ? '' : '-rinkeby'
+//         $.getJSON('https://api'+prefix+'.etherscan.io/api?module=contract&action=getsourcecode&address='+ splitAddresses[1] + '&apikey='+ETHERSCAN_API, function (data) {
+//             if (data.status === "1") {
+//                 console.log(data.result[0].ABI)
+//                 let json = data.result[0].ABI
+//                 $("#abiTextArea").val(json)
+//                 $("#abiTextArea").val(JSON.stringify(json))
+//                 $("#abiTextArea").trigger("change")
+//             }
+//         })
+//     } else {
       changeContractContext()
-    }    
+//     }    
   }
 })
