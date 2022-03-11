@@ -53,11 +53,10 @@ function handleFunctionButtonClick(e) {
         }              
         break;
       case "function":
-        out = out()
         break;
     }
     let outputs = funcs.filter(func => { return func.name === functionMap.name })[functionMap.index].outputs
-    responseTarget.text(err ? err.message : out)
+    typeof out == 'function'? responseTarget.html(err ? err.message : out()): responseTarget.text(err ? err.message : out)
     // console.log(out, outputs)
   }
   // properties.push(cb)
